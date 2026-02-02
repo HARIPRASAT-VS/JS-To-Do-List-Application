@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Java Script-To-Do List Application</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: "Segoe UI", sans-serif;
+        background: linear-gradient(135deg, #e0e7ff, #f8fafc);
+    }
+
+    .container {
+        width: 360px;
+        padding: 25px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.75);
+        backdrop-filter: blur(12px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+    }
+
+    h1 {
+        margin-bottom: 20px;
+        text-align: center;
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    .input-section {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    input {
+        flex: 1;
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px solid #c7d2fe;
+        outline: none;
+        font-size: 14px;
+        background: #f8fafc;
+    }
+
+    input:focus {
+        border-color: #6366f1;
+    }
+
+    button {
+        border: none;
+        border-radius: 10px;
+        padding: 10px 14px;
+        background: linear-gradient(135deg, #6366f1, #4f46e5);
+        color: white;
+        font-size: 14px;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 15px rgba(79,70,229,0.35);
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 12px;
+        margin-bottom: 10px;
+        background: #f1f5f9;
+        border-radius: 12px;
+        transition: background 0.2s;
+    }
+
+    li:hover {
+        background: #e0e7ff;
+    }
+
+    li span {
+        cursor: pointer;
+        color: #1e293b;
+        font-size: 14px;
+        flex: 1;
+    }
+
+    li.completed span {
+        text-decoration: line-through;
+        color: #64748b;
+    }
+
+    .delete-btn {
+        background: #ef4444;
+        border: none;
+        border-radius: 8px;
+        padding: 6px 10px;
+        color: white;
+        font-size: 12px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .delete-btn:hover {
+        background: #dc2626;
+    }
+
+    .footer {
+        text-align: center;
+        margin-top: 15px;
+        font-size: 12px;
+        color: #64748b;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>My Tasks</h1>
+
+    <div class="input-section">
+        <input type="text" id="taskInput" placeholder="Enter The Task You Need To Add ">
+        <button onclick="addTask()">Add</button>
+    </div>
+
+    <ul id="taskList"></ul>
+
+    <div class="footer">Interactive UI • JavaScript Core</div>
+</div>
+
+<script>
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    const taskList = document.getElementById("taskList");
+
+    function displayTasks() {
+        taskList.innerHTML = "";
+
+        tasks.forEach((task, index) => {
+            const li = document.createElement("li");
+            if (task.completed) li.classList.add("completed");
+
+            const span = document.createElement("span");
+            span.textContent = task.text;
+            span.onclick = () => toggleTask(index);
+
+            const del = document.createElement("button");
+            del.textContent = "Delete";
+            del.className = "delete-btn";
+            del.onclick = () => deleteTask(index);
+
+            li.appendChild(span);
+            li.appendChild(del);
+            taskList.appendChild(li);
+        });
+
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
+
+    function addTask() {
+        const input = document.getElementById("taskInput");
+        const text = input.value.trim();
+
+        if (text === "") {
+            alert("Please enter a task");
+            return;
+        }
+
+        tasks.push({ text, completed: false });
+        input.value = "";
+        displayTasks();
+    }
+
+    function toggleTask(index) {
+        tasks[index].completed = !tasks[index].completed;
+        displayTasks();
+    }
+
+    function deleteTask(index) {
+        tasks.splice(index, 1);
+        displayTasks();
+    }
+
+    displayTasks();
+</script>
+
+</body>
+</html>
